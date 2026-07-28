@@ -1,1 +1,5 @@
-"""Agentic RAG pipeline: a controlled state machine. Implemented in Phase 4."""
+"""Agentic RAG pipeline: a controlled state machine with hard budget bounds."""
+
+from agentic_rag_bench.agentic_rag.machine import AgenticRAGPipeline
+
+__all__ = ["AgenticRAGPipeline"]
