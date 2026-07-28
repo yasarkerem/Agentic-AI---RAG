@@ -1,7 +1,7 @@
 # Methodology
 
-> **Status:** skeleton (Phase 1). The evaluation methodology is finalized in
-> Phase 5; this records the design the implementation is being built toward.
+> **Status:** implemented (Phases 1–7). The evaluation framework described
+> here is in place and tested; real-model results have not yet been produced.
 
 ## Research question
 
@@ -49,11 +49,33 @@ Both systems share retrieval infrastructure, models, and budgets
 (`configs/default.yaml` is the single shared base; tested in
 `tests/unit/test_config.py::TestRepositoryConfigs::test_fairness_controls_identical_across_systems`).
 
+## Deterministic metric proxies (documented limitations)
+
+The `DeterministicJudge` (versioned `deterministic-judge/v1`) computes exact,
+reproducible proxies whose limits are stated up front:
+
+| Metric | Proxy | Limitation |
+|---|---|---|
+| factual_correctness | token-F1 vs reference answer | lexical agreement, not truth |
+| completeness | token recall of the reference | rewards vocabulary overlap |
+| citation_correctness | fraction of citations passing exact checks | exact by construction |
+| citation_completeness | fraction of gold documents cited | document-level only |
+| groundedness | answer content words found in retrieved evidence | lexical support proxy |
+| hallucination_rate | 1 − groundedness | inherits the proxy's limits |
+| contradiction_handling | cites ≥2 gold docs + contrastive language (L4+) | crude heuristic |
+| structure_readability | length/paragraph heuristic | crude heuristic |
+
+The LLM judge (versioned prompt + pinned model recorded per run) overrides
+the graded qualities when enabled; citation metrics always stay deterministic.
+
 ## Limitations (known in advance)
 
 - Small initial corpus (AI/RAG literature only) — findings may not
-  generalize to other domains.
+  generalize to other domains. The sample corpus is original summary prose
+  written for this project, not actual papers.
 - LLM-judge bias — mitigated but not eliminated by deterministic checks and
   judge versioning.
-- Single-run latency/cost measurements are noisy — reported with spread, not
-  as point estimates.
+- Single-run latency/cost measurements are noisy — reported with spread
+  (sd, bootstrap CI), not as point estimates.
+- Mock-provider runs validate the harness only; the generated report stamps
+  them as such and they must never be quoted as findings.

@@ -1,8 +1,10 @@
 # Experiment design
 
-> **Status:** skeleton (Phase 1). Finalized alongside Phases 5–7.
+> **Status:** implemented (Phases 5–7). Benchmark v0.1 is committed; the
+> matrix, persistence, statistics, and reporting all run end to end on the
+> sample corpus with mock providers.
 
-## Benchmark construction (Phase 5)
+## Benchmark construction
 
 - Corpus: open AI/RAG research papers and technical documents (RAG, agentic
   RAG, GraphRAG, RAPTOR, reranking, hybrid retrieval, hallucination

@@ -107,11 +107,84 @@ Assumptions (documented per working rules):
 
 ### Log
 
-_(see per-commit messages)_
+- **2026-07-28** — Implemented as planned (commit `d52bc85`). 49 new tests.
+  One fix during development: the hashed embedder needed stopword filtering
+  so question boilerplate ("what is the main…") doesn't drown content terms.
 
 ---
 
-## Phases 3–8
+## Phase 3 — Standard RAG baseline & Phase 4 — Agentic RAG
 
-_Planned in the same session; see per-phase WORKLOG sections added as they
-are implemented._
+### Log (2026-07-28, commit `828dc1b`)
+
+- `LLMProvider` protocol with a deterministic purpose-keyed mock (default)
+  and an opt-in Anthropic SDK provider (requires explicit config + API key;
+  never touched by tests). Pricing table cached from published API pricing.
+- Prompts are versioned and embed a machine-readable payload so the mock
+  stays deterministic while real models read the same prompt text.
+- `StandardRAGPipeline`: single pass, context budget fitting, citations
+  formatted verbatim from retrieved chunks (never model-invented).
+- `AgenticRAGPipeline`: analyzer → planner → bounded retrieve/assess/rewrite
+  loop → contradiction check → synthesize → deterministic citation
+  verification → finalize. Hard stops: rounds, subquestions, token budget,
+  cost budget, timeout, retry cap, and a no-progress stop when no weak
+  query could be rewritten. Full `AgentTrace` + `StopReason` per run.
+- 35 new tests incl. budget/timeout/retry/failure paths end to end.
+
+---
+
+## Phase 5 — Benchmark & evaluation, Phase 6 — Runner, Phase 7 — Reporting
+
+### Log (2026-07-28, commit `aa5b214`)
+
+- Benchmark v0.1: 25 tasks (5 per level) with reference answers and
+  document-level gold evidence, authored against the sample corpus;
+  committed JSON regenerable via `make benchmark` (drift-tested).
+- Retrieval metrics (Recall@k, Precision@k, MRR, nDCG, coverage, unique
+  docs), deterministic judge with documented proxy limitations, versioned
+  LLM-judge abstraction (never the only evaluator).
+- Experiment runner persists metadata (config snapshot, git commit,
+  benchmark version, models, prompt versions, seed) + results JSONL;
+  per-task crash isolation; `make evaluate` re-scores stored runs.
+- Statistics: seeded bootstrap CIs; in-repo Wilcoxon signed-rank with tie
+  and continuity correction, hand-verified in tests; small samples flagged.
+- Report generator: metric tables, paired agentic-vs-standard tests by
+  level group, five figures (validated categorical palette, direct value
+  labels). Mock runs are stamped "harness validation" in the report.
+- Full sample loop verified: `make ingest && make experiment && make report`
+  runs 4 systems x 25 tasks and produces the report — free, no API calls.
+
+---
+
+## Phase 8 — Documentation & release prep
+
+### Log (2026-07-28)
+
+- README rewritten to reflect the completed harness, with a real example
+  from an actual sample run (labeled mock) and explicit no-results framing.
+- docs/architecture.md, methodology.md, experiment_design.md updated from
+  skeletons to implemented state; deterministic-proxy limitation table added.
+- CONTRIBUTING.md added; Dockerfile now ships the sample corpus + benchmark
+  so the container can run the sample experiment.
+- Final checks: full test suite, Ruff, mypy --strict, pre-commit all green.
+
+### Definition of Done (brief §21) status
+
+- ✅ both systems run on the same corpus (fairness-tested)
+- ✅ 25 benchmark tasks, all 5 levels represented
+- ✅ results saved reproducibly (metadata + JSONL)
+- ✅ citations structured and deterministically verifiable
+- ✅ retrieval, answer, cost, latency metrics calculated
+- ✅ comparison report generated (tables, stats, figures)
+- ✅ tests pass; lint and type checks pass
+- ✅ README contains no fabricated results (mock runs labeled)
+- ✅ one command sequence reproduces the sample experiment
+- ⏳ Docker build + GitHub Actions verified in CI (sandbox cannot pull
+  base images; the CI docker job builds and smoke-tests the image)
+
+### Recommended next steps
+
+1. Real-model experiments: API embeddings + generation + LLM judge.
+2. Real paper corpus (open-access PDFs) and benchmark v0.2 with
+   chunk-level gold labels.
+3. Qdrant adapter and a cross-encoder reranker variant.

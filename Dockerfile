@@ -19,6 +19,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 COPY src ./src
 COPY configs ./configs
 COPY scripts ./scripts
+COPY data/corpus_sample ./data/corpus_sample
+COPY data/benchmark ./data/benchmark
 COPY README.md ./
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
