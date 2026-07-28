@@ -26,6 +26,7 @@ data/processed/*
 # Experiment outputs
 reports/results/*
 reports/figures/*
+reports/report.md
 !reports/results/.gitkeep
 !reports/figures/.gitkeep
 

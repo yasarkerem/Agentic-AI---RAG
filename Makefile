@@ -27,19 +27,19 @@ test: ## Run the test suite with coverage
 
 check: lint typecheck test ## Everything CI runs, locally
 
-ingest: ## Ingest the corpus (Phase 2)
+ingest: ## Ingest the sample corpus into data/processed
 	uv run python scripts/ingest_corpus.py
 
-benchmark: ## Build the benchmark tasks (Phase 5)
+benchmark: ## Regenerate the benchmark file from task definitions
 	uv run python scripts/build_benchmark.py
 
-experiment: ## Run the experiment matrix (Phase 6)
+experiment: ## Run the 4-system experiment matrix (mock provider, free)
 	uv run python scripts/run_experiment.py
 
-evaluate: ## Evaluate stored experiment results (Phase 5/6)
-	uv run python scripts/run_experiment.py --evaluate-only
+evaluate: ## Re-evaluate stored experiment results with the current evaluator
+	uv run python scripts/run_experiment.py --reevaluate reports/results
 
-report: ## Generate the comparison report (Phase 7)
+report: ## Generate the comparison report and figures
 	uv run python scripts/generate_report.py
 
 docker-build: ## Build the Docker image

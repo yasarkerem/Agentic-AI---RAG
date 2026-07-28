@@ -1,0 +1,10 @@
+# System A variant — Standard RAG with hybrid (dense + BM25) retrieval.
+# Overlays configs/default.yaml.
+
+name: standard-rag-hybrid
+system_type: standard_rag
+
+retrieval:
+  top_k: 8
+  use_bm25: true
+  dense_weight: 0.5

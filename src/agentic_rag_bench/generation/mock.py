@@ -74,6 +74,20 @@ class MockLLMProvider:
             return self._assess(payload)
         if purpose == "rewrite":
             return self._rewrite(payload)
+        if purpose == "judge":
+            # Flat mid-scale scores: validates the LLM-judge plumbing only.
+            # Real judging requires a real model; these numbers carry no signal.
+            return json.dumps(
+                {
+                    "factual_correctness": 0.5,
+                    "completeness": 0.5,
+                    "citation_correctness": 0.5,
+                    "citation_completeness": 0.5,
+                    "groundedness": 0.5,
+                    "structure_readability": 0.5,
+                    "contradiction_handling": None,
+                }
+            )
         if purpose == "contradictions":
             return json.dumps({"contradictions": []})
         if purpose in ("answer", "synthesize"):
