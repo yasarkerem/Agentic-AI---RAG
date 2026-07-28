@@ -1,0 +1,5 @@
+# System A — Standard RAG: one retrieval pass, optional rerank, one answer.
+# Overlays configs/default.yaml.
+
+name: standard-rag-dense
+system_type: standard_rag

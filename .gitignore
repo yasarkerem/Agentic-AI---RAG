@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Environments & secrets
+.env
+
+# Data: raw/processed corpora are local; benchmark tasks are versioned.
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Experiment outputs
+reports/results/*
+reports/figures/*
+!reports/results/.gitkeep
+!reports/figures/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
