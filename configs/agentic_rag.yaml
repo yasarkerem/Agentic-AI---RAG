@@ -1,0 +1,14 @@
+# System B — Agentic RAG: plan, retrieve iteratively, assess, synthesize, verify.
+# Overlays configs/default.yaml. The 'agent' section bounds are hard stops:
+# the pipeline must never loop indefinitely (brief §8).
+
+name: agentic-rag-dense
+system_type: agentic_rag
+
+agent:
+  max_retrieval_rounds: 3
+  max_subquestions: 6
+  max_total_tokens: 100000
+  max_cost_usd: 1.0
+  max_retries: 2
+  timeout_seconds: 300.0
