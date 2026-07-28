@@ -81,4 +81,37 @@ Assumptions (documented per working rules):
 
 ## Phase 2 — Ingestion and retrieval
 
-_Not started. Blocked on Phase 1 approval._
+### Plan (2026-07-28)
+
+- **Loaders** — Markdown (YAML frontmatter + heading-aware sections) and PDF
+  (pypdf, page-aware). Deterministic document IDs from slugified filenames.
+- **Chunking** — word-count sliding window with overlap; chunks never cross
+  page/section boundaries; deterministic chunk IDs
+  (`{doc}_p{page}_c{index-within-page}`); SHA-256 duplicate detection.
+- **Embeddings** — `Embedder` protocol; default is a deterministic
+  feature-hashing embedder (no downloads, no API, fully free). Real
+  providers plug in behind the same interface later.
+- **Vector index** — in-memory cosine index (numpy) persisted to disk.
+  *Assumption documented:* one implementation path that runs everywhere
+  (tests, CI, laptops) beats a Qdrant hard dependency now; the compose
+  service stays for a later adapter.
+- **BM25** — Okapi BM25 implemented in-repo (tested against hand-computed
+  values); hybrid fusion = min-max normalized weighted sum.
+- **Reranking** — `Reranker` protocol; default deterministic lexical-overlap
+  reranker (a cross-encoder would need torch — deliberately avoided to keep
+  the project free and light; the interface is ready for one).
+- **Sample corpus** — original, redistributable Markdown documents about
+  RAG topics under `data/corpus_sample/` (committed; `data/raw/` stays for
+  users' own papers and is gitignored).
+- `scripts/ingest_corpus.py` becomes real; `make ingest` works end to end.
+
+### Log
+
+_(see per-commit messages)_
+
+---
+
+## Phases 3–8
+
+_Planned in the same session; see per-phase WORKLOG sections added as they
+are implemented._
