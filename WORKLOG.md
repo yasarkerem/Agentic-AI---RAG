@@ -179,8 +179,11 @@ Assumptions (documented per working rules):
 - ✅ tests pass; lint and type checks pass
 - ✅ README contains no fabricated results (mock runs labeled)
 - ✅ one command sequence reproduces the sample experiment
-- ⏳ Docker build + GitHub Actions verified in CI (sandbox cannot pull
-  base images; the CI docker job builds and smoke-tests the image)
+- ✅ Docker build + GitHub Actions verified: CI run #4 on commit
+  `18da331` passed all four jobs (lint, typecheck, test, docker build +
+  container smoke test). Two CI fixes were needed: trigger on `claude/**`
+  pushes, and `load: true` on the docker build step so the smoke test can
+  find the image.
 
 ### Recommended next steps
 
